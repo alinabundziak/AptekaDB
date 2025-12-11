@@ -1,0 +1,157 @@
+CREATE DATABASE AptekaDB;
+GO
+
+USE AptekaDB;
+GO
+
+if not exists(select * from sys.tables where [name]='CategoryList')
+CREATE TABLE CategoryList (
+    category_id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100) NOT NULL,
+    description NVARCHAR(MAX)
+);
+
+if not exists(select * from sys.tables where [name]='ManufacturerList')
+CREATE TABLE ManufacturerList (
+    manufacturer_id INT PRIMARY KEY IDENTITY(1,1),
+    company_name NVARCHAR(150) NOT NULL,
+    country NVARCHAR(100),
+    address NVARCHAR(200),
+    phone NVARCHAR(20),
+    email NVARCHAR(100)
+);
+
+if not exists(select * from sys.tables where [name]='MedicineList')
+CREATE TABLE MedicineList (
+    medicine_id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(150) NOT NULL,
+    active_substance NVARCHAR(150),
+    form NVARCHAR(100),
+    dosage NVARCHAR(50),
+    price DECIMAL(10,2) NOT NULL,
+    expiry_date DATE,
+    manufacturer_id INT,
+    category_id INT,
+    prescription_required BIT DEFAULT 0,
+    FOREIGN KEY (manufacturer_id) REFERENCES ManufacturerList(manufacturer_id),
+    FOREIGN KEY (category_id) REFERENCES CategoryList(category_id)
+);
+
+if not exists(select * from sys.tables where [name]='MedicineStock')
+CREATE TABLE MedicineStock (
+    stock_id INT PRIMARY KEY IDENTITY(1,1),
+    medicine_id INT NOT NULL,
+    quantity INT NOT NULL,
+    location NVARCHAR(100),
+    min_quantity INT DEFAULT 0,
+    FOREIGN KEY (medicine_id) REFERENCES MedicineList(medicine_id)
+);
+
+if not exists(select * from sys.tables where [name]='SupplierList')
+CREATE TABLE SupplierList (
+    supplier_id INT PRIMARY KEY IDENTITY(1,1),
+    company_name NVARCHAR(150) NOT NULL,
+    address NVARCHAR(200),
+    phone NVARCHAR(20),
+    email NVARCHAR(100)
+);
+
+if not exists(select * from sys.tables where [name]='EmployeeList')
+CREATE TABLE EmployeeList (
+    employee_id INT PRIMARY KEY IDENTITY(1,1),
+    first_name NVARCHAR(50) NOT NULL,
+    last_name NVARCHAR(50) NOT NULL,
+    middle_name NVARCHAR(50),
+    position NVARCHAR(100),
+    phone NVARCHAR(20),
+    login NVARCHAR(50) UNIQUE,
+    password NVARCHAR(100)
+);
+
+if not exists(select * from sys.tables where [name]='DeliveryList')
+CREATE TABLE DeliveryList (
+    delivery_id INT PRIMARY KEY IDENTITY(1,1),
+    delivery_date DATE NOT NULL,
+    supplier_id INT,
+    employee_id INT,
+    total_cost DECIMAL(12,2),
+    FOREIGN KEY (supplier_id) REFERENCES SupplierList(supplier_id),
+    FOREIGN KEY (employee_id) REFERENCES EmployeeList(employee_id)
+);
+
+if not exists(select * from sys.tables where [name]='ClientList')
+CREATE TABLE ClientList (
+    client_id INT PRIMARY KEY IDENTITY(1,1),
+    first_name NVARCHAR(50),
+    last_name NVARCHAR(50),
+    middle_name NVARCHAR(50),
+    phone NVARCHAR(20) UNIQUE,
+    prescription_number NVARCHAR(50)
+);
+
+if not exists(select * from sys.tables where [name]='OrderList')
+CREATE TABLE OrderList (
+    order_id INT PRIMARY KEY IDENTITY(1,1),
+    order_date DATE NOT NULL,
+    total_amount DECIMAL(12,2),
+    client_id INT,
+    status NVARCHAR(50),
+    FOREIGN KEY (client_id) REFERENCES ClientList(client_id)
+);
+
+if not exists(select * from sys.tables where [name]='OrderItemList')
+CREATE TABLE OrderItemList (
+    detail_id INT PRIMARY KEY IDENTITY(1,1),
+    order_id INT,
+    medicine_id INT,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2),
+    subtotal DECIMAL(12,2),
+    FOREIGN KEY (order_id) REFERENCES OrderList(order_id),
+    FOREIGN KEY (medicine_id) REFERENCES MedicineList(medicine_id)
+);
+
+if not exists(select * from sys.tables where [name]='ReceiptList')
+CREATE TABLE ReceiptList (
+    receipt_id INT PRIMARY KEY IDENTITY(1,1),
+    receipt_number NVARCHAR(50),
+    issue_date DATE,
+    order_id INT,
+    total DECIMAL(12,2),
+    employee_id INT,
+    FOREIGN KEY (order_id) REFERENCES OrderList(order_id),
+    FOREIGN KEY (employee_id) REFERENCES EmployeeList(employee_id)
+);
+
+if not exists(select * from sys.tables where [name]='ReturnList')
+CREATE TABLE ReturnList (
+    return_id INT PRIMARY KEY IDENTITY(1,1),
+    order_id INT,
+    medicine_id INT,
+    return_date DATE,
+    quantity INT,
+    reason NVARCHAR(MAX),
+    refund_amount DECIMAL(12,2),
+    FOREIGN KEY (order_id) REFERENCES OrderList(order_id),
+    FOREIGN KEY (medicine_id) REFERENCES MedicineList(medicine_id)
+);
+
+if not exists(select * from sys.tables where [name]='DiscountList')
+CREATE TABLE DiscountList (
+    discount_id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100),
+    percentage DECIMAL(5,2),
+    start_date DATE,
+    end_date DATE,
+    conditions NVARCHAR(MAX)
+);
+
+if not exists(select * from sys.tables where [name]='PaymentList')
+CREATE TABLE PaymentList (
+    payment_id INT PRIMARY KEY IDENTITY(1,1),
+    order_id INT,
+    payment_date DATE,
+    amount DECIMAL(12,2),
+    method NVARCHAR(50),
+    FOREIGN KEY (order_id) REFERENCES OrderList(order_id)
+);
