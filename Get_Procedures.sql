@@ -14,7 +14,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Перевірка ідентифікатора, якщо заданий
+    -- ГЏГҐГ°ГҐГўВіГ°ГЄГ  ВіГ¤ГҐГ­ГІГЁГґВіГЄГ ГІГ®Г°Г , ГїГЄГ№Г® Г§Г Г¤Г Г­ГЁГ©
     IF @MedicineID IS NOT NULL
        AND NOT EXISTS (SELECT 1 FROM MedicineList WHERE medicine_id = @MedicineID)
     BEGIN
@@ -74,17 +74,17 @@ BEGIN
 END;
 GO
 
--- всі ліки, перша сторінка, 10 записів, сортування за ціною по зростанню
+-- ГўГ±Ві Г«ВіГЄГЁ, ГЇГҐГ°ГёГ  Г±ГІГ®Г°ВіГ­ГЄГ , 10 Г§Г ГЇГЁГ±ВіГў, Г±Г®Г°ГІГіГўГ Г­Г­Гї Г§Г  Г¶ВіГ­Г®Гѕ ГЇГ® Г§Г°Г®Г±ГІГ Г­Г­Гѕ
 EXEC dbo.sp_GetMedicine
     @PageSize = 10,
     @PageNumber = 1,
     @SortColumn = 'price',
     @SortDirection = 0;
 
--- ліки, що починаються на "Пара"
-EXEC dbo.sp_GetMedicine @Name = N'Пара';
+-- Г«ВіГЄГЁ, Г№Г® ГЇГ®Г·ГЁГ­Г ГѕГІГјГ±Гї Г­Г  "ГЏГ Г°Г "
+EXEC dbo.sp_GetMedicine @Name = N'ГЏГ Г°Г ';
 
--- тільки рецептурні, по категорії "Антибіотики" (припустимо, category_id = 3)
+-- ГІВіГ«ГјГЄГЁ Г°ГҐГ¶ГҐГЇГІГіГ°Г­Ві, ГЇГ® ГЄГ ГІГҐГЈГ®Г°ВіВї "ГЂГ­ГІГЁГЎВіГ®ГІГЁГЄГЁ" (ГЇГ°ГЁГЇГіГ±ГІГЁГ¬Г®, category_id = 3)
 EXEC dbo.sp_GetMedicine @CategoryID = 3, @PrescriptionRequired = 1;
 
 --2 
@@ -143,13 +143,13 @@ BEGIN
 END;
 GO
 
--- всі постачальники
+-- ГўГ±Ві ГЇГ®Г±ГІГ Г·Г Г«ГјГ­ГЁГЄГЁ
 EXEC dbo.sp_GetSupplier;
 
--- постачальники, що починаються на "Мед"
-EXEC dbo.sp_GetSupplier @Name = N'Мед';
+-- ГЇГ®Г±ГІГ Г·Г Г«ГјГ­ГЁГЄГЁ, Г№Г® ГЇГ®Г·ГЁГ­Г ГѕГІГјГ±Гї Г­Г  "ГЊГҐГ¤"
+EXEC dbo.sp_GetSupplier @Name = N'ГЊГҐГ¤';
 
--- друга сторінка, по 1 запису, сорт по назві
+-- Г¤Г°ГіГЈГ  Г±ГІГ®Г°ВіГ­ГЄГ , ГЇГ® 1 Г§Г ГЇГЁГ±Гі, Г±Г®Г°ГІ ГЇГ® Г­Г Г§ГўВі
 EXEC dbo.sp_GetSupplier
     @PageSize = 1,
     @PageNumber = 2,
