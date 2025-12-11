@@ -1,7 +1,7 @@
 USE AptekaDB;
 GO
 
--- Запит 1: всі ліки з категоріями та виробниками
+-- Г‡Г ГЇГЁГІ 1: ГўГ±Ві Г«ВіГЄГЁ Г§ ГЄГ ГІГҐГЈГ®Г°ВіГїГ¬ГЁ ГІГ  ГўГЁГ°Г®ГЎГ­ГЁГЄГ Г¬ГЁ
 SELECT
     m.medicine_id,
     m.name AS MedicineName,
@@ -15,7 +15,7 @@ FROM MedicineList m
 LEFT JOIN CategoryList c ON m.category_id = c.category_id
 LEFT JOIN ManufacturerList mf ON m.manufacturer_id = mf.manufacturer_id;
 
--- Запит 2: доступні ліки в аптеці (там, де stock.quantity > min_quantity)
+-- Г‡Г ГЇГЁГІ 2: Г¤Г®Г±ГІГіГЇГ­Ві Г«ВіГЄГЁ Гў Г ГЇГІГҐГ¶Ві (ГІГ Г¬, Г¤ГҐ stock.quantity > min_quantity)
 SELECT
     ms.stock_id,
     m.name AS MedicineName,
@@ -26,7 +26,7 @@ FROM MedicineStock ms
 JOIN MedicineList m ON ms.medicine_id = m.medicine_id
 WHERE ms.quantity > ms.min_quantity;
 
--- Запит 3: замовлення з клієнтами та сумами
+-- Г‡Г ГЇГЁГІ 3: Г§Г Г¬Г®ГўГ«ГҐГ­Г­Гї Г§ ГЄГ«ВіВєГ­ГІГ Г¬ГЁ ГІГ  Г±ГіГ¬Г Г¬ГЁ
 SELECT
     o.order_id,
     o.order_date,
@@ -37,7 +37,7 @@ SELECT
 FROM OrderList o
 LEFT JOIN ClientList c ON o.client_id = c.client_id;
 
--- Запит 4: деталі замовлення (що саме купив клієнт)
+-- Г‡Г ГЇГЁГІ 4: Г¤ГҐГІГ Г«Ві Г§Г Г¬Г®ГўГ«ГҐГ­Г­Гї (Г№Г® Г±Г Г¬ГҐ ГЄГіГЇГЁГў ГЄГ«ВіВєГ­ГІ)
 SELECT
     o.order_id,
     o.order_date,
@@ -52,7 +52,7 @@ JOIN ClientList c ON o.client_id = c.client_id
 JOIN MedicineList m ON oi.medicine_id = m.medicine_id
 ORDER BY o.order_id;
 
--- Запит 5: квитанції + працівники, які їх видали
+-- Г‡Г ГЇГЁГІ 5: ГЄГўГЁГІГ Г­Г¶ВіВї + ГЇГ°Г Г¶ВіГўГ­ГЁГЄГЁ, ГїГЄВі ВїГµ ГўГЁГ¤Г Г«ГЁ
 SELECT
     r.receipt_id,
     r.receipt_number,
@@ -65,7 +65,7 @@ FROM ReceiptList r
 JOIN EmployeeList e ON r.employee_id = e.employee_id
 JOIN OrderList o ON r.order_id = o.order_id;
 
--- Запит 6: поставки від постачальників + працівник, який прийняв
+-- Г‡Г ГЇГЁГІ 6: ГЇГ®Г±ГІГ ГўГЄГЁ ГўВіГ¤ ГЇГ®Г±ГІГ Г·Г Г«ГјГ­ГЁГЄВіГў + ГЇГ°Г Г¶ВіГўГ­ГЁГЄ, ГїГЄГЁГ© ГЇГ°ГЁГ©Г­ГїГў
 SELECT
     d.delivery_id,
     d.delivery_date,
@@ -76,7 +76,7 @@ FROM DeliveryList d
 LEFT JOIN SupplierList s ON d.supplier_id = s.supplier_id
 LEFT JOIN EmployeeList e ON d.employee_id = e.employee_id;
 
--- Запит 7: повернення товару з назвами ліків і клієнтом
+-- Г‡Г ГЇГЁГІ 7: ГЇГ®ГўГҐГ°Г­ГҐГ­Г­Гї ГІГ®ГўГ Г°Гі Г§ Г­Г Г§ГўГ Г¬ГЁ Г«ВіГЄВіГў Ві ГЄГ«ВіВєГ­ГІГ®Г¬
 SELECT
     r.return_id,
     r.return_date,
